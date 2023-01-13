@@ -22,12 +22,11 @@ jobs:
         tar xvf output.tar.gz
     - name: Run terraform apply
       run: |
-        exit 1  # stop here for testing
-        # curl -o terraform.zip https://releases.hashicorp.com/terraform/1.3.7/terraform_1.3.7_linux_amd64.zip
-        # unzip terraform.zip
-        # cd infra
-        # terraform init
-        # terraform apply plan
+        curl -o terraform.zip https://releases.hashicorp.com/terraform/1.3.7/terraform_1.3.7_linux_amd64.zip
+        unzip terraform.zip
+        cd infra
+        terraform init
+        terraform apply plan
     - name: Sync www to S3
       run: |
         aws s3 sync www/ s3://loshakov.link-www
