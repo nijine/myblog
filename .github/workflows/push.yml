@@ -1,4 +1,4 @@
-name: Merge to main
+name: Push to main
 
 on:
   push:
@@ -28,3 +28,6 @@ jobs:
     - name: Sync www to S3
       run: |
         aws s3 sync www/ s3://loshakov.link-www
+    - name: Clean up S3
+      run: |
+        aws s3 rm s3://nijine-terraform/output.tar.gz
