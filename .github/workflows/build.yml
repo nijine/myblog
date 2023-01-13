@@ -22,7 +22,7 @@ jobs:
       - name: Upload artifacts for plan
         uses: actions/upload-artifact@v3
         with:
-          name: site
+          name: www
           path: site/out
 
   plan:
@@ -35,7 +35,7 @@ jobs:
     - name: Download artifacts from build
       uses: actions/download-artifact@v3
     - name: Test step to show dir contents
-      run: ls -l
+      run: ls -l && ls -l www
     - name: Download and run terraform
       run: |
         curl -o terraform.zip https://releases.hashicorp.com/terraform/1.3.7/terraform_1.3.7_linux_amd64.zip
