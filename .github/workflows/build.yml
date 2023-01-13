@@ -15,7 +15,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '19.3'
-      - name: Install deps and build static site
         run: |
           cd site
           npm ci
