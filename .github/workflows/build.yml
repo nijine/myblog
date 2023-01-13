@@ -29,21 +29,25 @@ jobs:
     needs: build
   
     runs-on: ubuntu-latest
-    
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AccessKeyId }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AccessKeySecret }}
+      AWS_DEFAULT_REGION: ${{ secrets.Region }}
+
     steps:
     - uses: actions/checkout@v3
     - name: Download artifacts from build
       uses: actions/download-artifact@v3
-    - name: Test step to show dir contents
-      run: ls -l && ls -l www
     - name: Download and run terraform
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AccessKeyId }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AccessKeySecret }}
-        AWS_DEFAULT_REGION: ${{ secrets.Region }}
       run: |
         curl -o terraform.zip https://releases.hashicorp.com/terraform/1.3.7/terraform_1.3.7_linux_amd64.zip
         unzip terraform.zip
         cd infra
         terraform init
         terraform plan -out=plan
+    - name: Upload build artifacts to s3
+      run: |
+        apt install awscli -y
+        tar czvf output.tar.gz www/ infra/plan
+        aws s3 cp output.tar.gz s3://nijine-terraform
