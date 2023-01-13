@@ -22,5 +22,4 @@ provider "aws" {
 module "site" {
   source      = "github.com/nijine/simple-cf-site"
   domain_name = "loshakov.link"
-  www_dir     = "../www"
 }
