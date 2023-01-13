@@ -34,8 +34,6 @@ jobs:
     - uses: actions/checkout@v3
     - name: Download artifacts from build
       uses: actions/download-artifact@v3
-      with:
-        name: site
     - name: Test step to show dir contents
       run: ls -l
     - name: Download and run terraform
