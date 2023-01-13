@@ -48,6 +48,5 @@ jobs:
         terraform plan -out=plan
     - name: Upload build artifacts to s3
       run: |
-        apt install awscli -y
         tar czvf output.tar.gz www/ infra/plan
         aws s3 cp output.tar.gz s3://nijine-terraform
