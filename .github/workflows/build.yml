@@ -1,0 +1,51 @@
+name: PR Build
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Node.js artifacts
+        uses: actions/setup-node@v3
+        with:
+          node-version: '19.3'
+      - run: |
+          cd site
+          npm ci
+          npm run build --if-present
+      - name: Upload artifacts for plan
+        uses: actions/upload-artifact@v3
+        with:
+          name: www
+          path: site/out
+
+  plan:
+    needs: build
+  
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AccessKeyId }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AccessKeySecret }}
+      AWS_DEFAULT_REGION: ${{ secrets.Region }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Download artifacts from build
+      uses: actions/download-artifact@v3
+    - name: Download and run terraform
+      run: |
+        cd infra
+        terraform -version
+        terraform init
+        terraform plan -out=plan
+    - name: Upload build artifacts to s3
+      run: |
+        tar czvf output.tar.gz www/ infra/plan
+        aws s3 cp output.tar.gz s3://nijine-terraform

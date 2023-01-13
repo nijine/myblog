@@ -1,0 +1,33 @@
+name: Push to main
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  plan:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AccessKeyId }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AccessKeySecret }}
+      AWS_DEFAULT_REGION: ${{ secrets.Region }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Retrieve artifacts from S3
+      run: |
+        aws s3 cp s3://nijine-terraform/output.tar.gz .
+        tar xvf output.tar.gz
+    - name: Run terraform apply
+      run: |
+        cd infra
+        terraform init
+        terraform apply plan
+    - name: Sync www to S3
+      run: |
+        aws s3 sync www/ s3://loshakov.link-www
+    - name: Clean up S3
+      run: |
+        aws s3 rm s3://nijine-terraform/output.tar.gz
