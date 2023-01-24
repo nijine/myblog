@@ -38,7 +38,7 @@ function handler(event) {
   var request = event.request;
   var uri = request.uri;
 
-  request.uri = `$${uri.includes(".") ? uri : uri.concat(".html")}`;
+  request.uri = `$${uri.includes(".") ? uri : uri === '/' ? uri : uri.concat(".html")}`;
 
   return request;
 }
