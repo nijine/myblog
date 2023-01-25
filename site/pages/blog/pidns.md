@@ -65,7 +65,7 @@ Once the policy is created and applied (can be attaached directly if you don't f
 
 ### Raspberry Pi
 
-On the Raspberry Pi, we're going to need to do four things: (1) Install awscli, (2) configure awscli, and (3) add a script invoking awscli to our crontab. 
+On the Raspberry Pi, we're going to need to do three things: (1) Install awscli, (2) configure awscli, and (3) add a script invoking awscli to our crontab.
 
 #### AWS Client
 This will allow us to invoke our Lambda function from the Raspberry Pi.
