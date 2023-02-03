@@ -1,6 +1,6 @@
 ---
 title: DDNS with Raspberry Pi, Part 2!
-date: 2023/1/24
+date: 2023/2/3
 description: A quick and dirty way to set up your own self-hosted, *actual* Dynamic DNS service.
 tag: raspi,raspberry-pi,dns,aws,lambda
 author: Dmitriy
