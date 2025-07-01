@@ -74,7 +74,7 @@ On a very high level, we are doing the following, in order:
     * Grabs our IP value from the Lambda invocation
     * Performs a ChangeResourceRecordSets API call to Route53, doing an `UPSERT` which creates or updates a DNS 'A' record located in HOSTED_ZONE, whose name is defined by SERVER_PREFIX and DOMAIN_NAME
 
-I left TTL hard-coded, but it can either be made configurable, or grabbed from the existing DNS record, assuming one exists.
+I left TTL hard-coded, but it can be made configurable.
 
 ### Our Rapsberry Pi
 
