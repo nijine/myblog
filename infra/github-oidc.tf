@@ -40,6 +40,7 @@ data "aws_iam_policy_document" "github_actions_permissions" {
       "dynamodb:PutItem",
       "dynamodb:DeleteItem",
       "dynamodb:DescribeTable",
+      "dynamodb:DescribeContinuousBackups",
     ]
     resources = ["arn:aws:dynamodb:us-east-1:*:table/nijine-terraform-locks"]
   }
@@ -95,6 +96,7 @@ data "aws_iam_policy_document" "github_actions_permissions" {
       "s3:PutBucketOwnershipControls",
       "s3:GetBucketTagging",
       "s3:PutBucketTagging",
+      "s3:GetAccelerateConfiguration",
     ]
     resources = ["arn:aws:s3:::loshakov.link-www"]
   }
@@ -132,6 +134,56 @@ data "aws_iam_policy_document" "github_actions_permissions" {
       "route53:CreateHostedZone",
     ]
     resources = ["*"]
+  }
+
+  # Terraform manages the OIDC provider, role, and policy in github-oidc.tf
+  statement {
+    sid = "IAMOIDCProvider"
+    actions = [
+      "iam:CreateOpenIDConnectProvider",
+      "iam:GetOpenIDConnectProvider",
+      "iam:UpdateOpenIDConnectProviderThumbprint",
+      "iam:DeleteOpenIDConnectProvider",
+      "iam:TagOpenIDConnectProvider",
+      "iam:UntagOpenIDConnectProvider",
+      "iam:ListOpenIDConnectProviderTags",
+    ]
+    resources = ["arn:aws:iam::*:oidc-provider/token.actions.githubusercontent.com"]
+  }
+
+  statement {
+    sid = "IAMRoleManagement"
+    actions = [
+      "iam:CreateRole",
+      "iam:GetRole",
+      "iam:UpdateRole",
+      "iam:DeleteRole",
+      "iam:TagRole",
+      "iam:UntagRole",
+      "iam:ListRoleTags",
+      "iam:UpdateAssumeRolePolicy",
+      "iam:ListAttachedRolePolicies",
+      "iam:ListRolePolicies",
+      "iam:AttachRolePolicy",
+      "iam:DetachRolePolicy",
+    ]
+    resources = ["arn:aws:iam::*:role/github-actions-myblog"]
+  }
+
+  statement {
+    sid = "IAMPolicyManagement"
+    actions = [
+      "iam:CreatePolicy",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:CreatePolicyVersion",
+      "iam:DeletePolicy",
+      "iam:DeletePolicyVersion",
+      "iam:ListPolicyVersions",
+      "iam:TagPolicy",
+      "iam:UntagPolicy",
+    ]
+    resources = ["arn:aws:iam::*:policy/github-actions-myblog"]
   }
 }
 
