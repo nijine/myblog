@@ -10,46 +10,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
+
       - name: Build Node.js artifacts
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
           node-version: '19.3'
+
       - run: |
           cd site
           npm ci
           npm run build --if-present
+
       - name: Upload artifacts for plan
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: www
           path: site/out
 
   plan:
     needs: build
-  
+
     runs-on: ubuntu-latest
 
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AccessKeyId }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AccessKeySecret }}
-      AWS_DEFAULT_REGION: ${{ secrets.Region }}
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v6
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: us-east-1
+
     - name: Download artifacts from build
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
+      with:
+        name: www
+        path: www
+
     - name: Setup terraform
-      uses: hashicorp/setup-terraform@v3
+      uses: hashicorp/setup-terraform@v4
       with:
         terraform_version: "1.3.7"
         terraform_wrapper: false
+
     - name: Run terraform
       run: |
         cd infra
         terraform -version
         terraform init
         terraform plan -out=plan
+
     - name: Upload build artifacts to s3
       run: |
         tar czvf output.tar.gz www/ infra/plan
