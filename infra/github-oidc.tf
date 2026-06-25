@@ -34,6 +34,17 @@ resource "aws_iam_role" "github_actions" {
 
 data "aws_iam_policy_document" "github_actions_permissions" {
   statement {
+    sid = "TerraformStateLocking"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:DescribeTable",
+    ]
+    resources = ["arn:aws:dynamodb:us-east-1:*:table/nijine-terraform-locks"]
+  }
+
+  statement {
     sid = "TerraformStateBucket"
     actions = [
       "s3:GetObject",
