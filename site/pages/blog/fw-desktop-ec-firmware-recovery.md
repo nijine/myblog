@@ -1,17 +1,18 @@
 ---
 title: Recovering a Bricked Framework Desktop EC via SWD
-date: 'Wed Jun 25 2026'
+date: 2026/6/25
 description: How I recovered a Framework Desktop that wouldn't power on by reflashing the Nuvoton NPCX993 EC firmware over SWD using a Raspberry Pi Pico 2W and OpenOCD.
-tags:
-  - framework
-  - embedded
-  - hardware
-  - reverse-engineering
-  - swd
-  - openocd
+tag: framework,embedded,hardware,reverse-engineering,swd,openocd
+author: Dmitriy
 ---
 
-A few days ago I managed to brick the Embedded Controller (EC) firmware on my Framework Desktop — the system wouldn't power on at all when I pressed the power button. This is a write-up of how I traced down the right chip, found the debug header, and recovered the system using a Raspberry Pi Pico 2W, OpenOCD, and a backup I'd made with `ectool`.
+# Recovering a Bricked Framework Desktop EC via SWD
+
+A few days ago I managed to brick the Embedded Controller (EC) firmware on my Framework Desktop — the system wouldn't power on at all when I pressed the power button. I was attempting to work out my own modification to the EC firmware in order to enable HDMI CEC support. Pretty much all of the resources necessary to work this out are documented online in various forum posts, readmes, etc, so I figured it shouldn't be too hard to get Gemini to write an implementation plan, have Claude proofread it, and then carry on with building something that works. My dubious choices of AI workflows aside, I figured I should have a reasonable idea of what I'm looking at, and that if the firmware built successfully, I would be on the right path.
+
+Unfortunately, this was not the case. After flashing the EC firmware and powering down the system, I found that it would no longer power on, and that the LEDs on the board we're all lit up. Having worked with various microcontrollers in the past, I figured this probably meant that the various pins that normally get pulled low when the *correct* EC firmware loads we're not being pulled low. I had bricked the board, and in the interest of recovering something that would otherwise become a $1000 paperweight, I embarked on undoing my mistake. 
+
+This is a write-up of how I traced down the right chip on the board, found the debug header, and recovered the system using a Raspberry Pi Pico 2W, OpenOCD, and a backup I'd made with `ectool`. Remember kids, always take a backup when you're putzing with unknown microcontrollers, firmwares, etc.
 
 ## Background
 
