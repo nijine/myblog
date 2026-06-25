@@ -48,6 +48,9 @@ jobs:
 
     - name: Download artifacts from build
       uses: actions/download-artifact@v8
+      with:
+        name: www
+        path: www
 
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v4
