@@ -41,6 +41,7 @@ data "aws_iam_policy_document" "github_actions_permissions" {
       "dynamodb:DeleteItem",
       "dynamodb:DescribeTable",
       "dynamodb:DescribeContinuousBackups",
+      "dynamodb:DescribeTimeToLive",
     ]
     resources = ["arn:aws:dynamodb:us-east-1:*:table/nijine-terraform-locks"]
   }
@@ -76,27 +77,24 @@ data "aws_iam_policy_document" "github_actions_permissions" {
   statement {
     sid = "WebsiteBucketManagement"
     actions = [
+      "s3:Get*",
       "s3:CreateBucket",
       "s3:DeleteBucket",
-      "s3:GetBucketAcl",
-      "s3:PutBucketAcl",
-      "s3:GetBucketPolicy",
-      "s3:PutBucketPolicy",
       "s3:DeleteBucketPolicy",
-      "s3:GetBucketWebsite",
-      "s3:PutBucketWebsite",
       "s3:DeleteBucketWebsite",
-      "s3:GetBucketCORS",
+      "s3:PutBucketAcl",
       "s3:PutBucketCORS",
-      "s3:GetBucketVersioning",
-      "s3:PutBucketVersioning",
-      "s3:GetBucketPublicAccessBlock",
-      "s3:PutBucketPublicAccessBlock",
-      "s3:GetBucketOwnershipControls",
+      "s3:PutBucketLogging",
+      "s3:PutBucketNotification",
+      "s3:PutBucketObjectLockConfiguration",
       "s3:PutBucketOwnershipControls",
-      "s3:GetBucketTagging",
+      "s3:PutBucketPolicy",
+      "s3:PutBucketPublicAccessBlock",
       "s3:PutBucketTagging",
-      "s3:GetAccelerateConfiguration",
+      "s3:PutBucketVersioning",
+      "s3:PutBucketWebsite",
+      "s3:PutEncryptionConfiguration",
+      "s3:PutLifecycleConfiguration",
     ]
     resources = ["arn:aws:s3:::loshakov.link-www"]
   }
