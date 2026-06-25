@@ -1,8 +1,10 @@
 terraform {
   backend "s3" {
-    bucket = "nijine-terraform"
-    key    = "terraform.tfstate"
-    region = "us-east-1"
+    bucket         = "nijine-terraform"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    # Uncomment after running terraform apply once to create the table, then run terraform init -reconfigure
+    # dynamodb_table = "nijine-terraform-locks"
   }
 
   required_providers {
@@ -17,6 +19,17 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
+}
+
+resource "aws_dynamodb_table" "terraform_locks" {
+  name         = "nijine-terraform-locks"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
 }
 
 module "site" {
